@@ -32,7 +32,7 @@ jobs:
         run: bash cicd/package.sh
 
       - name: Upload deb artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: matrix-deb-package
           path: matrix-app_1.0-1.deb
