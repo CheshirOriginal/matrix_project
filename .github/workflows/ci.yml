@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential dpkg-dev
+
+      - name: Make scripts executable
+        run: chmod +x cicd/*.sh
+
+      - name: Build stage
+        run: bash cicd/build.sh
+
+      - name: Test stage
+        run: bash cicd/test.sh
+
+      - name: Package stage
+        run: bash cicd/package.sh
+
+      - name: Upload deb artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: matrix-deb-package
+          path: matrix-app_1.0-1.deb
