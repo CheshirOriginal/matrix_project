@@ -21,15 +21,15 @@ int main() {
 
     // ===== Ввод размера матрицы =====
     while (true) {
-        std::cout << "Enter matrix size N (1..1000): ";
+        std::cerr << "Enter matrix size N (1..1000): ";
 
         if (!safeInputInt(N)) {
-            std::cout << "Invalid input. Please enter an integer.\n";
+            std::cerr << "Invalid input. Please enter an integer.\n";
             continue;
         }
 
         if (N <= 0 || N > 1000) {
-            std::cout << "N must be between 1 and 1000.\n";
+            std::cerr << "N must be between 1 and 1000.\n";
             continue;
         }
 
@@ -38,16 +38,16 @@ int main() {
 
     std::vector<std::vector<int>> matrix(N, std::vector<int>(N));
 
-    std::cout << "Enter matrix elements:\n";
+    std::cerr << "Enter matrix elements:\n";
 
     // ===== Ввод элементов матрицы =====
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             while (true) {
-                std::cout << "Element [" << i << "][" << j << "]: ";
+                std::cerr << "Element [" << i << "][" << j << "]: ";
 
                 if (!safeInputInt(matrix[i][j])) {
-                    std::cout << "Invalid input. Please enter an integer.\n";
+                    std::cerr << "Invalid input. Please enter an integer.\n";
                     continue;
                 }
 
@@ -79,7 +79,7 @@ int main() {
     }
 
     // ===== Вывод результата =====
-    std::cout << "\nResult matrix:\n";
+    std::cerr << "\nResult matrix:\n";
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             std::cout << matrix[i][j] << " ";
