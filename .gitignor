@@ -1,0 +1,12 @@
+# Build directory
+build/
+
+# Executable
+matrix_app
+
+# Object files
+*.o
+
+# Editor files
+*.swp
+*.log
