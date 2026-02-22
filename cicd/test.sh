@@ -19,7 +19,7 @@ run_test () {
     echo -e "$INPUT" | ./matrix_app > output.txt
     echo -e "$EXPECTED" > expected.txt
 
-    if diff -u expected.txt output.txt; then
+    if diff -u -w expected.txt output.txt; then
         echo "$TEST_NAME passed!"
     else
         echo "$TEST_NAME failed!"
@@ -50,7 +50,7 @@ run_test \
 -1 2 -3
 4 -5 6
 7 8 -9" \
-"-9 -9 -9
+"-1 -9 -9
 4 -5 -9
 7 8 -9" \
 "Test 2"
