@@ -4,8 +4,10 @@ set -e
 
 echo "=== PACKAGE STAGE ==="
 
-# Если VERSION не передана — используем dev
-VERSION=${VERSION:-0.0.0-dev}
+if [ -z "$VERSION" ]; then
+    echo "ERROR: VERSION is not set"
+    exit 1
+fi
 
 PACKAGE_NAME="matrix-app"
 PACKAGE_DIR="${PACKAGE_NAME}_${VERSION}"
