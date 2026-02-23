@@ -1,23 +1,25 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ main ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ main ]
 
 jobs:
 
-  # ----------------------
-  # 1️⃣ BUILD JOB
-  # ----------------------
+  # =========================
+  # 1️⃣ BUILD
+  # =========================
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install build tools
         run: sudo apt update && sudo apt install -y build-essential
 
       - name: Make scripts executable
@@ -33,12 +35,12 @@ jobs:
           path: matrix_app
 
 
-  # ----------------------
-  # 2️⃣ TEST JOB
-  # ----------------------
+  # =========================
+  # 2️⃣ TEST
+  # =========================
   test:
     runs-on: ubuntu-latest
-    needs: build 
+    needs: build
 
     steps:
       - uses: actions/checkout@v4
@@ -55,12 +57,12 @@ jobs:
         run: bash cicd/test.sh
 
 
-  # ----------------------
-  # 3️⃣ PACKAGE JOB
-  # ----------------------
+  # =========================
+  # 3️⃣ PACKAGE (.deb)
+  # =========================
   package:
     runs-on: ubuntu-latest
-    needs: test 
+    needs: test
 
     steps:
       - uses: actions/checkout@v4
@@ -76,11 +78,77 @@ jobs:
       - name: Make executable
         run: chmod +x matrix_app
 
-      - name: Build deb package
-        run: bash cicd/package.sh
+      - name: Extract version (if tag)
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+          else
+            echo "VERSION=dev" >> $GITHUB_ENV
+          fi
 
-      - name: Upload deb artifact
+      - name: Build deb package
+        run: |
+          VERSION=${{ env.VERSION }}
+          bash cicd/package.sh
+
+      - name: Upload deb
         uses: actions/upload-artifact@v4
         with:
           name: matrix-deb-package
-          path: matrix-app_1.0-1.deb
+          path: matrix-app_${{ env.VERSION }}.deb
+
+
+  # =========================
+  # 4️⃣ DOCKER TEST 
+  # =========================
+  docker-test:
+    runs-on: ubuntu-latest
+    needs: package
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download deb
+        uses: actions/download-artifact@v4
+        with:
+          name: matrix-deb-package
+
+      - name: Build Docker image
+        run: docker build -t matrix-app:test .
+
+      - name: Run container test
+        run: |
+          echo -e "3\n1 2 3\n4 5 6\n7 8 9" | \
+          docker run -i --rm matrix-app:test
+
+
+  # =========================
+  # 5️⃣ PUSH TO DOCKERHUB 
+  # =========================
+  docker-push:
+    runs-on: ubuntu-latest
+    needs: docker-test
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/matrix-app:${{ env.VERSION }} .
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/matrix-app:${{ env.VERSION }} \
+                     ${{ secrets.DOCKERHUB_USERNAME }}/matrix-app:latest
+
+      - name: Push image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/matrix-app:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/matrix-app:latest
