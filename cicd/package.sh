@@ -31,7 +31,7 @@ chmod 755 "$PACKAGE_DIR/usr/local/bin/matrix_app"
 cat <<EOF > "$PACKAGE_DIR/DEBIAN/control"
 Package: $PACKAGE_NAME
 Version: $VERSION
-Section: base
+Section: utils
 Priority: optional
 Architecture: amd64
 Maintainer: Kirill
