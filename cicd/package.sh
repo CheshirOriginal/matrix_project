@@ -4,11 +4,7 @@ set -e
 
 echo "=== PACKAGE STAGE ==="
 
-if [ -z "$VERSION" ]; then
-    echo "ERROR: VERSION is not set"
-    exit 1
-fi
-
+VERSION=${VERSION:-0.0.0-dev}
 PACKAGE_NAME="matrix-app"
 PACKAGE_DIR="${PACKAGE_NAME}_${VERSION}"
 
@@ -21,11 +17,11 @@ rm -f "${PACKAGE_DIR}.deb"
 
 # Создаём структуру пакета
 mkdir -p "$PACKAGE_DIR/DEBIAN"
-mkdir -p "$PACKAGE_DIR/usr/local/bin"
+mkdir -p "$PACKAGE_DIR/usr/src/matrix-app"
 
-# Копируем бинарник
-cp matrix_app "$PACKAGE_DIR/usr/local/bin/"
-chmod 755 "$PACKAGE_DIR/usr/local/bin/matrix_app"
+# Копируем исходники
+cp src/*.cpp "$PACKAGE_DIR/usr/src/matrix-app/"
+cp Makefile "$PACKAGE_DIR/usr/src/matrix-app/"
 
 # Создаём control файл
 cat <<EOF > "$PACKAGE_DIR/DEBIAN/control"
@@ -35,13 +31,25 @@ Section: utils
 Priority: optional
 Architecture: amd64
 Maintainer: Kirill
-Depends: libc6
+Depends: build-essential
 Description: Matrix diagonal task application
  Finds minimal element on diagonals and replaces upper triangle elements.
 EOF
 
+# Создаём postinst файл
+cat <<EOF > "$PACKAGE_DIR/DEBIAN/postinst"
+#!/bin/bash
+set -e
+echo "Building matrix-app..."
+cd /usr/src/matrix-app
+make
+install -m 755 matrix_app /usr/local/bin/matrix_app
+echo "matrix-app installed successfully."
+EOF
+
 chmod 755 "$PACKAGE_DIR/DEBIAN"
 chmod 644 "$PACKAGE_DIR/DEBIAN/control"
+chmod 755 "$PACKAGE_DIR/DEBIAN/postinst"
 
 # Сборка deb
 echo "Building .deb package..."
