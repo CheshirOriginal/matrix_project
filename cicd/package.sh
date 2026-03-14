@@ -20,7 +20,7 @@ mkdir -p "$PACKAGE_DIR/DEBIAN"
 mkdir -p "$PACKAGE_DIR/usr/src/matrix-app"
 
 # Копируем исходники
-cp src/*.cpp "$PACKAGE_DIR/usr/src/matrix-app/"
+cp -r src "$PACKAGE_DIR/usr/src/matrix-app/"
 cp Makefile "$PACKAGE_DIR/usr/src/matrix-app/"
 
 # Создаём control файл
