@@ -11,6 +11,9 @@ PACKAGE_DIR="${PACKAGE_NAME}_${VERSION}"
 echo "Version: $VERSION"
 echo "Package directory: $PACKAGE_DIR"
 
+# \Удаляем старый dep-пакет
+rm -f "${PACKAGE_DIR}.deb"
+
 # Создаём структуру пакета
 mkdir -p "$PACKAGE_DIR/DEBIAN"
 mkdir -p "$PACKAGE_DIR/usr/src/matrix-app"
@@ -54,6 +57,5 @@ dpkg-deb --build "$PACKAGE_DIR"
 
 echo "Package created: ${PACKAGE_DIR}.deb"
 
-# Удаляем сборку
+# Удаляем файлы сборки
 rm -rf "$PACKAGE_DIR"
-rm -f "${PACKAGE_DIR}.deb"
