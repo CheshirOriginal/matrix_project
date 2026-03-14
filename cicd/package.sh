@@ -42,7 +42,7 @@ cat <<EOF > "$PACKAGE_DIR/DEBIAN/postinst"
 set -e
 echo "Building matrix-app..."
 cd /usr/src/matrix-app
-make
+make rebuild
 install -m 755 matrix_app /usr/local/bin/matrix_app
 echo "matrix-app installed successfully."
 EOF
