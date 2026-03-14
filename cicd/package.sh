@@ -11,10 +11,6 @@ PACKAGE_DIR="${PACKAGE_NAME}_${VERSION}"
 echo "Version: $VERSION"
 echo "Package directory: $PACKAGE_DIR"
 
-# Удаляем старую сборку
-rm -rf "$PACKAGE_DIR"
-rm -f "${PACKAGE_DIR}.deb"
-
 # Создаём структуру пакета
 mkdir -p "$PACKAGE_DIR/DEBIAN"
 mkdir -p "$PACKAGE_DIR/usr/src/matrix-app"
@@ -43,7 +39,8 @@ set -e
 echo "Building matrix-app..."
 cd /usr/src/matrix-app
 make rebuild
-install -m 755 matrix_app /usr/local/bin/matrix_app
+make clean
+install -m 755 matrix_app /usr/bin/matrix_app
 echo "matrix-app installed successfully."
 EOF
 
@@ -56,3 +53,7 @@ echo "Building .deb package..."
 dpkg-deb --build "$PACKAGE_DIR"
 
 echo "Package created: ${PACKAGE_DIR}.deb"
+
+# Удаляем сборку
+rm -rf "$PACKAGE_DIR"
+rm -f "${PACKAGE_DIR}.deb"
