@@ -43,7 +43,7 @@ echo "Building matrix-app..."
 cd /usr/src/matrix-app
 make rebuild
 install -m 755 matrix_app /usr/bin/matrix_app
-make clean
+rm -fr /usr/src/matrix-app
 echo "matrix-app installed successfully."
 EOF
 
