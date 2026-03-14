@@ -42,8 +42,8 @@ set -e
 echo "Building matrix-app..."
 cd /usr/src/matrix-app
 make rebuild
-make clean
 install -m 755 matrix_app /usr/bin/matrix_app
+make clean
 echo "matrix-app installed successfully."
 EOF
 
