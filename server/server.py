@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import subprocess
 import time
 
-from prometheus_client import Counter, Histogram, Gauge, generate_latest
+from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
 
 REQUESTS = Counter("matrix_requests_total", "Total matrix requests")
 ERRORS = Counter("matrix_errors_total", "Total matrix errors")
