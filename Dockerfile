@@ -9,7 +9,7 @@ RUN apt update && apt install -y \
     python3-pip
 
 # устанавливаем prometheus библиотеку
-RUN pip3 install prometheus-client
+RUN pip3 install prometheus-client --break-system-packages
 
 # Копируем deb-файл (любой версии)
 COPY matrix-app_*.deb /tmp/app.deb
