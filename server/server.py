@@ -53,6 +53,7 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/metrics":
             metrics = generate_latest()
             self.send_response(200)
+            self.send_header("Content-Type", CONTENT_TYPE_LATEST)
             self.end_headers()
             self.wfile.write(metrics)
 
