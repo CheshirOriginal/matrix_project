@@ -1,13 +1,25 @@
 FROM ubuntu:24.04
 
-# Обновляем пакеты
-RUN apt update
+# отключаем интерактивные вопросы apt
+ENV DEBIAN_FRONTEND=noninteractive
+
+# устанавливаем зависимости
+RUN apt update && apt install -y \
+    python3 \
+    python3-pip
+
+# устанавливаем prometheus библиотеку
+RUN pip3 install prometheus-client
 
 # Копируем deb-файл (любой версии)
 COPY matrix-app_*.deb /tmp/app.deb
+COPY server/server.py /tmp/server.py
 
 # Устанавливаем пакет
 RUN apt install -y /tmp/app.deb
 
-# Запуск программы
-ENTRYPOINT ["matrix_app"]
+# порт для Kubernetes и Docker
+EXPOSE 8080
+
+# запуск сервера
+CMD ["python3", "/tmp/server.py"]

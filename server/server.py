@@ -28,7 +28,7 @@ class Handler(BaseHTTPRequestHandler):
             start = time.time()
 
             result = subprocess.run(
-                ["./matrix_app"],
+                ["matrix_app"],
                 input=data,
                 text=True,
                 capture_output=True
