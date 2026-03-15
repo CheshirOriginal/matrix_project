@@ -57,6 +57,15 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(metrics)
 
+    def do_HEAD(self):
+        if self.path == "/metrics":
+            self.send_response(200)
+            self.send_header("Content-Type", CONTENT_TYPE_LATEST)
+            self.end_headers()
+        else:
+            self.send_response(404)
+            self.end_headers()
+
 
 server = HTTPServer(("0.0.0.0", 8080), Handler)
 
