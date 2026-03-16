@@ -2,7 +2,7 @@
 
 URL="http://$(minikube ip):30007"
 
-REQUESTS=200
+REQUESTS=20000
 CONCURRENCY=10
 
 payload='3
