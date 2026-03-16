@@ -3,7 +3,7 @@ kind: ServiceMonitor
 metadata:
   name: matrix-app
   labels:
-    release: kube-prometheus-stack
+    release: matrix-stack
 
 spec:
   selector:
