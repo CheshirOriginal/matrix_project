@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: matrix-app
+  labels:
+    app: matrix-app
+
+spec:
+  type: {{ .Values.service.type }}
+
+  selector:
+    app: matrix-app
+
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: 8080
+      nodePort: {{ .Values.service.nodePort }}

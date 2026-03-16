@@ -1,0 +1,23 @@
+replicaCount: 2
+
+image:
+  repository: cheshiroriginal/matrix-app
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30007
+
+kube-prometheus-stack:
+
+  grafana:
+    service:
+      type: NodePort
+      nodePort: 30000
+
+  prometheus:
+    service:
+      type: NodePort
+      nodePort: 30900
